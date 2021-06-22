@@ -52,4 +52,4 @@ stages:
         chartType: FilePath
         chartPath: '$(System.DefaultWorkingDirectory)/ci_cd/kubernetes_config/citrix-ingress-controller'
         releaseName: cic
-        overrideValues: 'nsIP=10.0.0.4,license.accept=yes,adcCredentialSecret=nslogin'
+        overrideValues: 'nsIP=10.240.0.7,license.accept=yes,adcCredentialSecret=nslogin'
