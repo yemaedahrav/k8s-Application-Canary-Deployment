@@ -27,4 +27,20 @@ stages:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: apply
         useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
+    
+    - task: Kubernetes@0
+      displayName: 'Deploy NGINX Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
+    
+    - task: Kubernetes@0
+      displayName: 'Deploy NGINX Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
