@@ -1,57 +1,55 @@
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
-    include:
-    - ci_cd/deployment_config/deploy_config.json
-
+    exclude:
+    - pipeline.yaml
 pool: amey-vmpool
-
 stages:
 - stage:
   jobs:
-  - job: Deploy
-    displayName: Kubernetes Sample Deployment
+  - job: CIC
+    displayName: Deploying CIC
     pool: amey-vmpool
     steps:
-    
     - task: Bash@3
       inputs:
         targetType: 'inline'
         script: |
-          sudo apt-get install python -y
+          sudo apt-get update
           sudo apt-get install unzip -y
-    
-    - task: KubectlInstaller@0
-      inputs:
-        kubectlVersion: 'latest'
-    - task: PythonScript@0
-      displayName: 'Reading configuration file'
-      inputs:
-        scriptSource: 'filePath'
-        scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config/read_config.py'
-        arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'apply'
+      displayName: 'Install zip package'
+    - task: HelmInstaller@0
+      displayName: 'Install Helm 2.14.1'
     - task: Kubernetes@0
-      displayName: 'Deploy Guestbook Application'
+      displayName: 'Delete Stale NS Secrets'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
-    
+        kubernetesServiceConnection: 'bharathi-cn-aks-svc-con'
+        command: delete
+        arguments: 'secret nslogin '
+      continueOnError: true
+    - task: HelmDeploy@0
+      displayName: 'Delete Stale Helm Entries'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: 'bharathi-cn-aks-svc-con'
+        command: uninstall
+        arguments: cic
+      continueOnError: true
     - task: Kubernetes@0
-      displayName: 'Deploy Guestbook Application'
+      displayName: 'Create NS Secrets'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
-    
-    - task: Kubernetes@0
-      displayName: 'Deploy Guestbook Application'
+        kubernetesServiceConnection: 'bharathi-cn-aks-svc-con'
+        command: create
+        arguments: 'secret generic  nslogin --from-literal=username="nsroot" --from-literal=password="nsroot@12345"'
+    - task: HelmDeploy@0
+      displayName: 'Deploy CIC using Helm'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: 'bharathi-cn-aks-svc-con'
+        command: install
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/ci_cd/kubernetes_config/citrix-ingress-controller'
+        releaseName: cic
+        overrideValues: 'nsIP=10.0.0.4,license.accept=yes,adcCredentialSecret=nslogin'
