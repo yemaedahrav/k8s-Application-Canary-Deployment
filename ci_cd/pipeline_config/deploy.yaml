@@ -22,15 +22,7 @@ stages:
         scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config/read_config.py'
         arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'apply'
     - task: Kubernetes@0
-      displayName: 'Deploy NGINX Application'
-      inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
-    
-    - task: Kubernetes@0
-      displayName: 'Deploy NGINX Application'
+      displayName: 'Deploy Guestbook Application'
       inputs:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: apply
@@ -38,9 +30,17 @@ stages:
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
     
     - task: Kubernetes@0
-      displayName: 'Deploy NGINX Application'
+      displayName: 'Deploy Guestbook Application'
       inputs:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
+    
+    - task: Kubernetes@0
+      displayName: 'Deploy Guestbook Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
