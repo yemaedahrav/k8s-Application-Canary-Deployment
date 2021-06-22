@@ -1,0 +1,64 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    exclude:
+    - pipeline.yaml
+
+pool: amey-vmpool
+
+stages:
+- stage:
+  jobs:
+  - job: CIC
+    displayName: Deploying CIC
+    pool: amey-vmpool
+    steps:
+    - bash: |
+      sudo apt-get update
+      sudo apt-get install unzip -y
+      
+      displayName: 'Install zip package'
+
+    steps:
+    - task: HelmInstaller@0
+      displayName: 'Install Helm 2.14.1'
+
+    steps:
+    - task: Kubernetes@0
+      displayName: 'Delete Stale NS Secrets'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: delete
+        arguments: 'secret nslogin '
+      continueOnError: true
+
+    steps:
+    - task: HelmDeploy@0
+      displayName: 'Delete Stale Helm Entries'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: uninstall
+        arguments: cic
+
+    steps:
+    - task: Kubernetes@0
+      displayName: 'Create NS Secrets'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: create
+        arguments: 'secret generic  nslogin --from-literal=username="nsroot" --from-literal=password="nsroot@12345"'
+        
+    steps:
+    - task: HelmDeploy@0
+      displayName: 'Deploy CIC using Helm'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: install
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/citrix-helm-charts/citrix-ingress-controller'
+        releaseName: cic
+        overrideValues: 'nsIP=10.0.0.4,license.accept=yes,adcCredentialSecret=nslogin'
