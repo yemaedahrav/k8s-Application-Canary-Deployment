@@ -15,6 +15,17 @@ stages:
     displayName: Kubernetes Sample Deployment
     pool: amey-vmpool
     steps:
+    
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          sudo apt-get install python -y
+          sudo apt-get install unzip -y
+    
+    - task: KubectlInstaller@0
+      inputs:
+        kubectlVersion: 'latest'
     - task: PythonScript@0
       displayName: 'Reading configuration file'
       inputs:
@@ -22,9 +33,25 @@ stages:
         scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config/read_config.py'
         arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'apply'
     - task: Kubernetes@0
-      displayName: 'Deploy NGINX Application'
+      displayName: 'Deploy Guestbook Application'
       inputs:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: apply
         useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
+    
+    - task: Kubernetes@0
+      displayName: 'Deploy Guestbook Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
+    
+    - task: Kubernetes@0
+      displayName: 'Deploy Guestbook Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
