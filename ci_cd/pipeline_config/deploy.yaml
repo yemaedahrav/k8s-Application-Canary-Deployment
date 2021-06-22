@@ -19,7 +19,7 @@ stages:
       displayName: 'Reading configuration file'
       inputs:
         scriptSource: 'filePath'
-        scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config'
+        scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config/read_config.py'
         arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'apply'
     - task: Kubernetes@0
       displayName: 'Deploy NGINX Application'
