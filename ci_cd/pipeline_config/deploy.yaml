@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - ci_cd/deployment_config/deploy_config.json
+
+pool: amey-vmpool
+
+stages:
+- stage:
+  jobs:
+  - job: Deploy
+    displayName: Kubernetes Sample Deployment
+    pool: amey-vmpool
+    steps:
+    - task: Kubernetes@0
+      displayName: 'Deploy NGINX Application'
+      inputs:
+        kubernetesServiceConnection: 'amey-aks-svc-con'
+        command: apply
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
