@@ -16,6 +16,7 @@ stages:
     pool: amey-vmpool
     steps:
     - task: PythonScript@0
+      displayName: 'Reading configuration file'
       inputs:
         scriptSource: 'filePath'
         scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config'
@@ -27,4 +28,3 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
-    
