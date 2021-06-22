@@ -15,10 +15,19 @@ stages:
     displayName: Kubernetes Sample Deployment
     pool: amey-vmpool
     steps:
-    - task: Kubernetes@0
-      displayName: 'Deploy NGINX Application'
+    - task: PythonScript@0
+      displayName: 'Reading configuration file'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
-        command: apply
+        scriptSource: 'filePath'
+        scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config'
+        arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'delete'
+        
+    - task: Kubernetes@1
+      displayName: 'Delete the version'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'amey-aks-svc-con'
+        command: 'delete'
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
+    

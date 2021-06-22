@@ -23,9 +23,9 @@ def main(input_params):
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Input generator')
     parser.add_argument('--config_file', nargs='?', default=None,
-                        help='config.json path')
+                        help='json file path')
     parser.add_argument('--action', nargs='?', default=None,
-                        help='create/delete')
+                        help='apply/delete')
     return parser.parse_args()
 
 
