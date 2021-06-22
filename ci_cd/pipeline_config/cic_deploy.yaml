@@ -50,6 +50,6 @@ stages:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: install
         chartType: FilePath
-        chartPath: '$(System.DefaultWorkingDirectory)/citrix-helm-charts/citrix-ingress-controller'
+        chartPath: '$(System.DefaultWorkingDirectory)/ci_cd/kubernetes_config/citrix-ingress-controller'
         releaseName: cic
         overrideValues: 'nsIP=10.0.0.4,license.accept=yes,adcCredentialSecret=nslogin'
