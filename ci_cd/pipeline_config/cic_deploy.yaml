@@ -36,6 +36,7 @@ stages:
         kubernetesServiceConnection: 'amey-aks-svc-con'
         command: uninstall
         arguments: cic
+      continueOnError: true
     - task: Kubernetes@0
       displayName: 'Create NS Secrets'
       inputs:
