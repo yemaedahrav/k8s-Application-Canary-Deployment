@@ -15,6 +15,11 @@ stages:
     displayName: Kubernetes Sample Deployment
     pool: amey-vmpool
     steps:
+    - task: PythonScript@0
+      inputs:
+        scriptSource: 'filePath'
+        scriptPath: '$(System.DefaultWorkingDirectory)/ci_cd/pipeline_config'
+        arguments: --config_file $(System.DefaultWorkingDirectory)/ci_cd/deployment_config/deploy_config.json --action 'apply'
     - task: Kubernetes@0
       displayName: 'Deploy NGINX Application'
       inputs:
@@ -22,3 +27,4 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
+    
