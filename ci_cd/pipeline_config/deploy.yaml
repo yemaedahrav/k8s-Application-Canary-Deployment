@@ -20,6 +20,9 @@ stages:
         versionSpec: '3.x'
         addToPath: true
         architecture: 'x64'
+    - task: KubectlInstaller@0
+      inputs:
+        kubectlVersion: 'latest'
     - task: PythonScript@0
       displayName: 'Reading configuration file'
       inputs:
