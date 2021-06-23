@@ -35,7 +35,7 @@ stages:
     - task: Kubernetes@0
       displayName: 'Deploy Guestbook Application'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
@@ -43,7 +43,7 @@ stages:
     - task: Kubernetes@0
       displayName: 'Deploy Guestbook Application'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
@@ -51,7 +51,7 @@ stages:
     - task: Kubernetes@0
       displayName: 'Deploy Guestbook Application'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: apply
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
