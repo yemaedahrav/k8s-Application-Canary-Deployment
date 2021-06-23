@@ -38,20 +38,5 @@ stages:
         kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: apply
         useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/deployment.yaml'
-    
-    - task: Kubernetes@0
-      displayName: 'Deploy Guestbook Application'
-      inputs:
-        kubernetesServiceConnection: 'bharathi-cn-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/service.yaml'
-    
-    - task: Kubernetes@0
-      displayName: 'Deploy Guestbook Application'
-      inputs:
-        kubernetesServiceConnection: 'bharathi-cn-svc-con'
-        command: apply
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)/ingress.yaml'
+        configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
+  
