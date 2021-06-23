@@ -26,7 +26,7 @@ stages:
       displayName: 'Delete the version'
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'amey-aks-svc-con'
+        kubernetesServiceEndpoint: 'bharathi-cn-svc-con'
         command: 'delete'
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/$(CONFIG_PATH)'
