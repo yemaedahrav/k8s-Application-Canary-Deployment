@@ -25,7 +25,7 @@ stages:
     - task: Kubernetes@0
       displayName: 'Delete Stale NS Secrets'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: delete
         arguments: 'secret nslogin '
       continueOnError: true
@@ -33,21 +33,21 @@ stages:
       displayName: 'Delete Stale Helm Entries'
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: uninstall
         arguments: cic
       continueOnError: true
     - task: Kubernetes@0
       displayName: 'Create NS Secrets'
       inputs:
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: create
         arguments: 'secret generic  nslogin --from-literal=username="nsroot" --from-literal=password="nsroot@12345"'
     - task: HelmDeploy@0
       displayName: 'Deploy CIC using Helm'
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceConnection: 'amey-aks-svc-con'
+        kubernetesServiceConnection: 'bharathi-cn-svc-con'
         command: install
         chartType: FilePath
         chartPath: '$(System.DefaultWorkingDirectory)/ci_cd/kubernetes_config/citrix-ingress-controller'
